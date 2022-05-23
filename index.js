@@ -94,3 +94,147 @@ function viewEmployees() {
         startPrompts();
     });
 };
+
+
+// ADD functions
+
+function addDepartment() {
+    inquirer.prompt(prompt.insertDepartment).then(function (answer) {
+        var query = "INSERT INTO department (name) VALUES (?)";
+        connection.query(query, answer.department, function (err, res) {
+            if (err) throw err;
+            console.log(
+                `${answer.department.toUpperCase()} has been added!`
+            );
+        });
+        viewDepartments();
+    });
+}
+
+
+function addRole() {
+    var query = `SELECT * FROM department`;
+    connection.query(query, function (err, res) {
+        if(err) throw err;
+        
+        const departmentChoices = res.map(({ id, name}) => ({
+            value: id,
+            name: `${id} ${name}`,
+        }));
+        inquirer
+            .prompt(prompt.insertRole(departmentChoices))
+            .then(function (answer) {
+                var query = `INSERT INTO role SET ?`;
+
+                connection.query(
+                    query,
+                    {
+                        title: answer.roleTitle,
+                        salary: answer.roleSalary,
+                        department_id: answer.departmentId,
+                    },
+                    function (err, res) {
+                        if(err) throw err;
+                        console.log("\n" + res.affectedRows + " role created");
+
+                        viewRoles();
+                    },
+                );
+            });
+    });
+}
+
+
+const addEmployee = () => {
+
+    let departmentArray = [];
+    connection.query(`SELECT * FROM department`, (err, res) => {
+        if (err) throw err;
+
+        res.forEach((element) => {
+            departmentArray.push(`${element.id} ${element.name}`);
+        });
+
+        let roleArray = [];
+        connection.query(`SELECT * FROM role`, (err, res) => {
+            if (err) throw err;
+
+            res.forEach((element) => {
+                roleArray.push(`${element.id} ${element.title}`);
+            });
+        
+        let managerArray = [];
+        connection.query( `Select id, first_name, last_name FROM employee`,
+        (err, res) => {
+            if (err) throw err;
+            res.forEach((element) => {
+                managerArray.push(
+                    `${elment.id} ${element.first_name} ${element.last_name}`,
+                );
+            });
+
+            inquirer.prompt(
+                prompt.insertEmployee(departmentArray, roleArray, managerArray),
+            )
+            .then((response) => {
+                let roleReturn = parseInt(response.role);
+                let managerReturn = parseInt(response.manager);
+                connection.query(
+                    "INSERT INTO employee SET ?",
+                    {
+                        first_name: response.firstName,
+                        last_name: response.lastName,
+                        role_id: roleReturn,
+                        manager_id: managerReturn,
+                    },
+                    (err, res) => {
+                        if (err) throw err;
+                        console.log("\n" + res.affectedRows + "employee added");
+                        viewEmployees();
+                    },
+                );
+            });
+          },
+         );
+       });
+    });
+};
+
+
+// UPDATE function 
+
+const updateEmployeeRole = () => {
+    let employees = [];
+    connection.query(`SELECT id, first_name, last_name FROM employee`,
+    (err, res) => {
+        if (err) throw err;
+       
+        res.forEach((element) => {
+            employees.push(`${element.id} ${element.first_name} ${element.last_name}`
+            );
+        });
+
+        let job = [];
+        connection.query(`SELECT id, title FROM role`, (err, res) => {
+            if (err) throw err;
+
+            res.forEach((element) => {
+                job.push(`${element.id} ${element.title}`);
+            });
+
+            inquirer.prompt(prompt.updateRole(employees, job)).then((response) => {
+                let idReturn = parseInt(response.update);
+                let roleReturn = parseInt(response.update);
+                connection.query(`UPDATE employee SET role_id = ${roleReturn} WHERE id = ${idReturn}`,
+                (err, res) => {
+                    if (err) throw err;
+
+                    console.log("\n" + "\n" + res.affectedRows + " Employee role updated",);
+                    startPrompts();
+                },
+                );
+            });
+        });
+      },   
+    );
+};
