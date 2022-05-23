@@ -41,7 +41,7 @@ module.exports = {
             choices: departmentChoices,
         },
     ],
-    
+
     addEmployee: (departmentArray, roleArray, managerArray) => [
         {
             name: "firstName",
@@ -73,4 +73,19 @@ module.exports = {
         },
     ],
 
-}
+    // prompts for UPDATE
+    updateRole: (employees, job) => [
+        {
+            name: "update role",
+            type: "list",
+            message: "Select the employee whose role you would like to change",
+            choices: employees,
+        },
+        {
+            name: "new role",
+            type: "list",
+            message: "Select the employee's new role",
+            choices: job,
+        },
+    ],
+};

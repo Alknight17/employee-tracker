@@ -41,6 +41,6 @@ VALUES ("Kyra", "Peters", 4, NULL );
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ("Remy", "Onnet", 5, 2 );
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Robert", "Johnson", 6, NULL );
+VALUES ("Patricia", "Williams", 6, NULL );
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Robert", "Johnson", 7, 3 );
+VALUES ("Dave", "Elmer", 7, 3 );
