@@ -1,9 +1,9 @@
 const inquirer = require("inquirer");
-const table = require("console.table");
+require("console.table");
 
 const connection = require("./config/connection");
 const prompt = require("./config/prompt");
-require("console.table");
+
 
 
 // display message upon starting app
@@ -11,7 +11,6 @@ console.log( 'Hello and welcome to Employee Tracker! ' +
     'Engage with the prompts below to navigate through employee database');
 
 
-startPrompts();
 // main prompt showing all tables that can be viewed 
 function startPrompts() {
     inquirer.prompt(prompt.startPrompts).then(function ({ task }) {
@@ -39,9 +38,9 @@ function startPrompts() {
                 break;
             case "Close Application":
                 console.log('Thank you, goodbye');
-                connection.end();
+                //connection.end();
                 break;
-        }
+        };
     });
 };
 
@@ -56,7 +55,7 @@ function viewDepartments() {
         res.forEach((department) => {
             console.log(`ID: ${department.id} | ${department.name} Department`);
         });
-        firstPrompt();
+        startPrompts();
     });
 };
 
@@ -65,10 +64,11 @@ function viewRoles() {
     var query = "SELECT * FROM role";
     connection.query(query, function (err, res) {
         if (err) throw err;
-        console.log(`\nROLES:\n`);
-        res.forEach((role) => {
-            console.log(`ID: ${role.id} | Title: ${role.title}\n Salary: ${role.salary}\n`,);
-        });
+        // console.log(`\nROLES:\n`);
+        // res.forEach((role) => {
+        //     console.log(`ID: ${role.id} | Title: ${role.title}\n Salary: ${role.salary}\n`,);
+        // });
+        console.table(res);
         startPrompts();
     });
 }
@@ -80,7 +80,7 @@ function viewEmployees() {
     CONCAT(m.first_name, ' ', m.last_name) AS manager
     FROM employee e
     LEFT JOIN role r
-    ON e.role = r.id
+    ON e.role_id = r.id
     LEFT JOIN department d
     ON d.id = r.department_id
     LEFT JOIN employee m
@@ -99,15 +99,16 @@ function viewEmployees() {
 // ADD functions
 
 function addDepartment() {
-    inquirer.prompt(prompt.insertDepartment).then(function (answer) {
+    inquirer.prompt(prompt.addDepartment).then(function (answer) {
+        console.log("hello")
         var query = "INSERT INTO department (name) VALUES (?)";
         connection.query(query, answer.department, function (err, res) {
             if (err) throw err;
             console.log(
                 `${answer.department.toUpperCase()} has been added!`
             );
+            viewDepartments();
         });
-        viewDepartments();
     });
 }
 
@@ -122,7 +123,7 @@ function addRole() {
             name: `${id} ${name}`,
         }));
         inquirer
-            .prompt(prompt.insertRole(departmentChoices))
+            .prompt(prompt.addRole(departmentChoices))
             .then(function (answer) {
                 var query = `INSERT INTO role SET ?`;
 
@@ -169,12 +170,12 @@ const addEmployee = () => {
             if (err) throw err;
             res.forEach((element) => {
                 managerArray.push(
-                    `${elment.id} ${element.first_name} ${element.last_name}`,
+                    `${element.id} ${element.first_name} ${element.last_name}`,
                 );
             });
 
             inquirer.prompt(
-                prompt.insertEmployee(departmentArray, roleArray, managerArray),
+                prompt.addEmployee(departmentArray, roleArray, managerArray),
             )
             .then((response) => {
                 let roleReturn = parseInt(response.role);
@@ -223,8 +224,8 @@ const updateEmployeeRole = () => {
             });
 
             inquirer.prompt(prompt.updateRole(employees, job)).then((response) => {
-                let idReturn = parseInt(response.update);
-                let roleReturn = parseInt(response.update);
+                let idReturn = parseInt(response.role_id);
+                let roleReturn = parseInt(response.employee_id);
                 connection.query(`UPDATE employee SET role_id = ${roleReturn} WHERE id = ${idReturn}`,
                 (err, res) => {
                     if (err) throw err;
@@ -238,3 +239,9 @@ const updateEmployeeRole = () => {
       },   
     );
 };
+
+connection.connect(function (err) {
+    if (err) throw err;
+    startPrompts();
+});
+

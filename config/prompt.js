@@ -12,13 +12,13 @@ module.exports = {
             "Add Role",
             "Add Employee",
             "Update Employee Role",
-            "Close Appliction",
+            "Close Application",
         ],
     },
 
     // Prompts for ADD
     addDepartment: {
-        name: "Department",
+        name: "department",
         tpye: "input",
         message: "Enter department name",
     },
@@ -76,13 +76,13 @@ module.exports = {
     // prompts for UPDATE
     updateRole: (employees, job) => [
         {
-            name: "update role",
+            name: "role_id",
             type: "list",
             message: "Select the employee whose role you would like to change",
             choices: employees,
         },
         {
-            name: "new role",
+            name: "employee_id",
             type: "list",
             message: "Select the employee's new role",
             choices: job,

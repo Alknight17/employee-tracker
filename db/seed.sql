@@ -1,4 +1,4 @@
-USE employeeDb;
+USE employeedb;
 
 
 /* INSERT DEPARTMENTS */
