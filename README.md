@@ -15,4 +15,5 @@ This application allows for businesses to keep track of employees across mutlipl
 
 
 ## Example Video
-[Walkthrough Video](/assets/employee-tracker-gif.gif)
+[Walkthrough pt1.](/assets/Walkthrough%20pt.1.gif)
+[Walkthrough pt.2](/assets/Walkthrough%20pt.2.gif)
