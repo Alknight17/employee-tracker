@@ -24,9 +24,9 @@ VALUES ("Background Artist", 80000, 3);
 INSERT INTO role (title, salary, department_id)
 VALUES ("Compositor", 70000, 3);
 INSERT INTO role (title, salary, department_id)
-VALUES ("Film Editor", 90000, 5);
+VALUES ("Film Editor", 90000, 4);
 INSERT INTO role (title, salary, department_id)
-VALUES ("Assistant Editor", 80000, 5);
+VALUES ("Assistant Editor", 80000, 4);
 
 
 /* INSERT EMPLOYEES */
